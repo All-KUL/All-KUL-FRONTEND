@@ -6,7 +6,8 @@ export default function RegistrationClicked() {
     const [buttonName,setButtonName]=useState('register');
     const [code, setCode] = useState(""); // code 상태를 useState로 관리
     const [inputText, setInputText] = useState("");
-      
+
+
     const handleButtonClick = (buttonName) => {
         setButtonName(buttonName);
       };
@@ -124,6 +125,7 @@ export default function RegistrationClicked() {
                 marginLeft: "312px",
                 }}/>
             <DoRegistration  inputText={code}/>
+            
     </div>
 
     );

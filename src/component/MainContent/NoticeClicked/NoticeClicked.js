@@ -1,7 +1,7 @@
 import { useState } from "react";
 import "../../../index.css";
 export default function NoticeClicked() {
-
+    
     return (
         <div style={{ display: "flex" }}>
             <div style={{display:"flex",flexDirection:"column"}}>
@@ -36,10 +36,33 @@ export default function NoticeClicked() {
                     fontSize:"8",
                     marginLeft:"32px"
             }}> All-kul 사용법</p>
-            <text style={{
+         
+         
+            <p style={{
                 marginLeft:"10px"
-            }}> 수강신청 화이이티티티티이ㅣ티이티ㅣㅇ</text>
+            }}>1. 조회 및 추가 접속</p>
+            <p style={{
+                marginLeft:"20px"
+            }}>-연습하고자 하는 강의 생성을 해주세요.(과목번호, 교과목명, 개설학과, 수용인원을 입력해주세요)</p>
+         
+            <p style={{
+                marginLeft:"10px"
+            }}>2. 난이도 설정 </p>
+         
+            <p style={{
+                marginLeft:"20px"
+            }}>-연습하고자 하는 난이도를 설정해주세요(상,중,하)</p>
+         
+            <p style={{
+                marginLeft:"10px"
+            }}>3. 서버 시간 확인 </p>
             
+            
+            <p style={{
+                marginLeft:"20px"
+            }}>-서버 시간을 확인 후, 수강신청 시간이 되면 과목번호 4자리를 입력하여 수강신청 하세요</p>
+         
+
             </div>
 
         </div>

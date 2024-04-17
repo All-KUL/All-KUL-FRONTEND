@@ -14,7 +14,7 @@ export default function DoRegistration({inputText}) {
     // 남은 데이터의 ID를 재설정
     newData.forEach((item, index) => {
       item.id = index + 1;
-    });
+    });//id 임의의 값 설정
     setData(newData);
   };
 
@@ -26,6 +26,7 @@ export default function DoRegistration({inputText}) {
         {
           id: data.length + 1, // 현재 데이터 개수 + 1 로 ID 설정
           courseCode: inputText,
+          subjectName:"네프워크 프로그래밍",
           instructor: "New Instructor",
           credits: 3,
           // 필요한 경우 기본 값으로 설정 가능
@@ -102,12 +103,16 @@ export default function DoRegistration({inputText}) {
       ></button>
       <div
         style={{
+          width:"100%",
           display: "flex",
           flexDirection: "column",
         }}
       >
+
         <text style={{ fontWeight: "bold", marginTop: "10px", marginLeft: "10px" }}>수강신청 내역</text>
+
         <MyTable columns={columns} data={data} handleDelete={handleDelete} />
+
       </div>
     </div>
   );

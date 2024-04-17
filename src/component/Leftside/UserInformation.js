@@ -14,9 +14,9 @@ export default function UserInfo(){
             <span style={{
                 display: "inline-block", // inline 요소에서 inline-block으로 변경
                 fontSize:"13px",
-                paddingTop:"10px",
-                paddingLeft:"10px"
-            }}>이름 </span>
+                paddingTop:"20px",
+                paddingLeft:"15px"
+            }}>유저 정보 </span>
             <HorizonLine/>
         </div>
     )
