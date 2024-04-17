@@ -2,23 +2,23 @@ import React, { useState, useEffect } from 'react';
 import GetTable from './GetTable';
 import axios from 'axios';
 
-export default function Getlecture() {
+export default function GetLecture() {
   const [inputText, setInputText] = useState("");
   const [data, setData] = useState([]);
  
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get('/api/v1/lecture/getAllLecture');
-        setData(response.data.object); // object 키에 해당하는 배열을 참조
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      }
-    };
-  
     fetchData();
   }, []);
- 
+
+  const fetchData = async () => {
+    try {
+      const response = await axios.get('/api/v1/lecture/getAllLecture');
+      setData(response.data.object); // object 키에 해당하는 배열을 참조
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
+
   const handleDelete = (rowIndex) => {
     const newData = [...data];
     newData.splice(rowIndex, 1);
@@ -92,7 +92,7 @@ export default function Getlecture() {
       </div>
 
       <div style={{ marginLeft: "312px", width: "79%", display: "flex", flexDirection: "column" }}>
-        <GetTable columns={columns} data={data} handleDelete={handleDelete} />
+        <GetTable columns={columns} data={data} handleDelete={handleDelete} fetchData={fetchData} />
       </div>
     </div>
   );

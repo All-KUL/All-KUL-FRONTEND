@@ -18,7 +18,7 @@ function AddTable({ columns, data }) {
 
   const sendAddRequest = async () => {
     try {
-      const queryString = Object.keys(rowData)//아 쿼리로 형식을 안 바꿔서..형식이 이상해서 안 되는거였구만
+      const queryString = Object.keys(rowData)//쿼리형태로 맞춰서 하기 위해
         .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(rowData[key]))
         .join('&');
   
