@@ -7,7 +7,7 @@ import { useState,useEffect } from 'react';
 function App() {
  
   const [activeComponent, setActiveComponent] = useState('Notice');
-
+  //눌린 화면 보이게
   const Buttonclick = (componentName) => {
     setActiveComponent(componentName);
   };

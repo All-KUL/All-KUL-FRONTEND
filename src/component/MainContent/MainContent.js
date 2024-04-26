@@ -14,6 +14,7 @@ export default function MainContent({ activeComponent }){
       {activeComponent === 'Registration' && <Registrationclicked/>}
       {activeComponent === 'Check' && <CheckClicked />}
       {activeComponent === 'Evaluation' && <EvaluationClicked />}
+ 
     </div>
  )   
 }

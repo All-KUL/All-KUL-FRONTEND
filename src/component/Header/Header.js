@@ -34,7 +34,7 @@ export default function Header({onButtonClick }){
            style={{ 
             borderBottom: activeButton === 'Notice' ? '3px solid #28a745' : 'none' ,
             color: activeButton === 'Notice' ? '#28a745' : 'black', 
-            marginLeft:"400px"
+            marginLeft:"340px"
             }}/>
 
            <Registartion
@@ -44,7 +44,9 @@ export default function Header({onButtonClick }){
             onButtonClick('Registration');
             }}     
             style={{ borderBottom: activeButton === 'Registration' ? '3px solid #28a745' : 'none',
-           color: activeButton === 'Registration' ? '#28a745' : 'black'  }}/>
+           color: activeButton === 'Registration' ? '#28a745' : 'black',
+           marginLeft:"60px" 
+            }}/>
           
            <Check
            onClick={() => {
@@ -52,14 +54,17 @@ export default function Header({onButtonClick }){
             onButtonClick('Check');
             }}
            style={{ borderBottom: activeButton === 'Check' ? '3px solid #28a745' : 'none',
-           color: activeButton === 'Check' ? '#28a745' : 'black'}}/>
+           color: activeButton === 'Check' ? '#28a745' : 'black'
+           ,
+           marginLeft:"60px"}}/>
            <Evaluation
            onClick={() => {
             handleButtonClick('Evaluation');
             onButtonClick('Evaluation');
             }}
            style={{ borderBottom: activeButton === 'Evaluation' ? '3px solid #28a745' : 'none',
-           color: activeButton === 'Evaluation' ? '#28a745' : 'black',  }}/>
+           color: activeButton === 'Evaluation' ? '#28a745' : 'black',
+           marginLeft:"60px" }}/>
            
         </div>
         <div style={{
