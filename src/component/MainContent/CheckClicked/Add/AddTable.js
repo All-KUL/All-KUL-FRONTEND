@@ -24,7 +24,7 @@ function AddTable({ columns, data }) {
         .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(rowData[key]))
         .join('&');
 
-      const response = await axios.post(baseURL + '/api/v1/lecture/addLecture', queryString);
+      const response = await axios.post(`${baseURL}/api/v1/lecture/addLecture`, queryString);
       console.log(response.data);
     } catch (error) {
       console.error('Error adding lecture:', error);

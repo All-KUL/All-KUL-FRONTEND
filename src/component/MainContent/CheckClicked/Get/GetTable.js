@@ -16,7 +16,7 @@ function GetTable({ columns, data, handleDelete, fetchData }) {
   // 삭제 요청을 서버에 보내는 함수
   const sendDeleteRequest = async (id) => {
     try {
-      await axios.delete(baseURL + `/api/v1/lecture/deleteLecture?id=${id}`);
+      await axios.delete(`${baseURL}/api/v1/lecture/deleteLecture?id=${id}`);
       console.log(`Successfully deleted lecture with ID: ${id}`);
       // 삭제 성공 후 fetchData 함수 호출하여 데이터 다시 가져오기
       fetchData();

@@ -11,7 +11,7 @@ export default function Getlecture() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(baseURL + '/api/v1/lecture/getAllLecture');
+        const response = await axios.get(`${baseURL}/api/v1/lecture/getAllLecture`);
         setData(response.data.object); // object 키에 해당하는 배열을 참조
       } catch (error) {
         console.error('Error fetching data:', error);
