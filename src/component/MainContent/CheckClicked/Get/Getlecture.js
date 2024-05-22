@@ -2,23 +2,25 @@ import React, { useState, useEffect } from 'react';
 import GetTable from './GetTable';
 import axios from 'axios';
 
+const baseURL = process.env.REACT_APP_LECTURE_API; //base URL 설정
+
 export default function Getlecture() {
   const [inputText, setInputText] = useState("");
   const [data, setData] = useState([]);
- 
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('/api/v1/lecture/getAllLecture');
+        const response = await axios.get(baseURL + '/api/v1/lecture/getAllLecture');
         setData(response.data.object); // object 키에 해당하는 배열을 참조
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
-  
+
     fetchData();
   }, []);
- 
+
   const handleDelete = (rowIndex) => {
     const newData = [...data];
     newData.splice(rowIndex, 1);
