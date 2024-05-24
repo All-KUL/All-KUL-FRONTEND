@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useTable } from 'react-table';
 import axios from 'axios';
 
+const baseURL = process.env.REACT_APP_LECTURE_API; //base URL 설정
+
 function AddTable({ columns, data }) {
   const {
     getTableProps,
@@ -22,14 +24,14 @@ function AddTable({ columns, data }) {
       const queryString = Object.keys(rowData)
         .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(rowData[key]))
         .join('&');
-  
-      const response = await axios.post(`${lectureApiUrl}/api/v1/lecture/addLecture`, queryString);
+
+      const response = await axios.post(`${baseURL}/api/v1/lecture/addLecture`, queryString);
       console.log(response.data);
     } catch (error) {
       console.error('Error adding lecture:', error);
     }
   };
-  
+
 
   // 추가 버튼 클릭 시 추가 요청을 보내는 함수
   const handleAddButtonClick = () => {
@@ -79,7 +81,7 @@ function AddTable({ columns, data }) {
                 return (
                   <td {...cell.getCellProps()} style={{ border: '1px solid #ddd', padding: '8px', textAlign: 'center', fontSize: "13px" }}>
                     {cellIndex === (row.cells.length - 1) ? (
-                      <button style={{ backgroundColor: '#7AB85C', color: 'white', border: 'none', borderRadius: '5px', padding: '4px 8px', cursor: 'pointer' }}  onClick={handleAddButtonClick}>추가</button>
+                      <button style={{ backgroundColor: '#7AB85C', color: 'white', border: 'none', borderRadius: '5px', padding: '4px 8px', cursor: 'pointer' }} onClick={handleAddButtonClick}>추가</button>
                     ) : (
                       <input
                         type="text"

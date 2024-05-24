@@ -1,25 +1,25 @@
+// src/component/MainContent/CheckClicked/Get/Getlecture.js
 import React, { useState, useEffect } from 'react';
 import GetTable from './GetTable';
-import axios from 'axios';
+import api from './api'; // 수정된 axios 인스턴스를 import 합니다.
 
 export default function Getlecture() {
   const [inputText, setInputText] = useState("");
   const [data, setData] = useState([]);
-  const lectureApiUrl = process.env.REACT_APP_LECTURE_API;
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/api/v1/lecture/getAllLecture`);
+        const response = await api.get('/lecture/getAllLecture');
         setData(response.data.object); // object 키에 해당하는 배열을 참조
       } catch (error) {
         console.error('Error fetching data:', error);
       }
     };
-  
+
     fetchData();
-  }, [lectureApiUrl]);
- 
+  }, []);
+
   const handleDelete = (rowIndex) => {
     const newData = [...data];
     newData.splice(rowIndex, 1);
@@ -33,14 +33,14 @@ export default function Getlecture() {
       alert("잘못된 입력 값입니다.");
     }
     setInputText("");
-  }
+  };
 
   const activeEnter = (e) => {
     if (e.key === "Enter") {
       activeButton();
       e.target.value = "";
     }
-  }
+  };
 
   const columns = React.useMemo(
     () => [
@@ -57,8 +57,8 @@ export default function Getlecture() {
     <div>
       <div style={{ display: "flex", marginLeft: "312px" }}>
         <button style={{ backgroundColor: "#3BAAB5", border: "0px", height: "15px", marginTop: "13px" }} />
-        <text style={{ fontWeight: "bold", marginTop: "10px", marginLeft: "10px", width: "100px" }}>과목 조회</text>
-        <text style={{ fontSize: "13px", fontWeight: "bold", marginTop: "12px", marginLeft: "754px", whiteSpace: "nowrap" }}>개별과목조회</text>
+        <span style={{ fontWeight: "bold", marginTop: "10px", marginLeft: "10px", width: "100px" }}>과목 조회</span>
+        <span style={{ fontSize: "13px", fontWeight: "bold", marginTop: "12px", marginLeft: "754px", whiteSpace: "nowrap" }}>개별과목조회</span>
         <input
           type="text"
           onChange={(e) => setInputText(e.target.value)}
