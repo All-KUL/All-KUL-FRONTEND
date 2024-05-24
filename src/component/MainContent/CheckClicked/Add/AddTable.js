@@ -10,6 +10,7 @@ function AddTable({ columns, data }) {
     rows,
     prepareRow,
   } = useTable({ columns, data });
+  const lectureApiUrl = process.env.REACT_APP_LECTURE_API;
 
   // 각 열의 값을 저장하는 상태
   const [rowData, setRowData] = useState({});
@@ -18,11 +19,11 @@ function AddTable({ columns, data }) {
 
   const sendAddRequest = async () => {
     try {
-      const queryString = Object.keys(rowData)//아 쿼리로 형식을 안 바꿔서..형식이 이상해서 안 되는거였구만
+      const queryString = Object.keys(rowData)
         .map(key => encodeURIComponent(key) + '=' + encodeURIComponent(rowData[key]))
         .join('&');
   
-      const response = await axios.post('/api/v1/lecture/addLecture', queryString);
+      const response = await axios.post(`${lectureApiUrl}/api/v1/lecture/addLecture`, queryString);
       console.log(response.data);
     } catch (error) {
       console.error('Error adding lecture:', error);

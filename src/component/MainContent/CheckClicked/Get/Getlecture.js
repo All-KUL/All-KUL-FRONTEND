@@ -5,11 +5,12 @@ import axios from 'axios';
 export default function Getlecture() {
   const [inputText, setInputText] = useState("");
   const [data, setData] = useState([]);
- 
+  const lectureApiUrl = process.env.REACT_APP_LECTURE_API;
+
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get('/api/v1/lecture/getAllLecture');
+        const response = await axios.get(`http://localhost:8080/api/v1/lecture/getAllLecture`);
         setData(response.data.object); // object 키에 해당하는 배열을 참조
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -17,7 +18,7 @@ export default function Getlecture() {
     };
   
     fetchData();
-  }, []);
+  }, [lectureApiUrl]);
  
   const handleDelete = (rowIndex) => {
     const newData = [...data];
