@@ -10,6 +10,8 @@ const EnrollmentWebSocket = () => {
     const [isConnected, setIsConnected] = useState(false);
     const [lectureId, setLectureId] = useState('');
     const [enrollTime, setEnrollTime] = useState('');
+    const [name, setName] = useState('');
+
     const websocket = useRef(null);
 
     useEffect(() => {
@@ -102,6 +104,14 @@ const EnrollmentWebSocket = () => {
                 <button onClick={() => handleSendMessage('serverTime', '')} disabled={!isConnected}>
                     Get Server Time
                 </button>
+                
+                <input
+                    type="text"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    placeholder=""
+                />
+
             </div>
             <div>
                 <h3>Messages</h3>

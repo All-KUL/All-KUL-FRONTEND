@@ -1,16 +1,17 @@
 // src/component/MainContent/CheckClicked/Get/Getlecture.js
 import React, { useState, useEffect } from 'react';
 import GetTable from './GetTable';
-import api from './api'; // 수정된 axios 인스턴스를 import 합니다.
-
+import axios from 'axios';
 export default function Getlecture() {
   const [inputText, setInputText] = useState("");
   const [data, setData] = useState([]);
-
+  const lectureapi = process.env.REACT_APP_LECTURE_API; // 환경 변수 가져오기
+  
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await api.get('/lecture/getAllLecture');
+        console.log('lectureapi:', lectureapi);
+        const response = await axios.get(`api/v1/lecture/getAllLecture`);
         setData(response.data.object); // object 키에 해당하는 배열을 참조
       } catch (error) {
         console.error('Error fetching data:', error);
