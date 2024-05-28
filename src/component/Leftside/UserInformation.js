@@ -16,7 +16,7 @@ export default function UserInfo(){
                 fontSize:"13px",
                 paddingTop:"20px",
                 paddingLeft:"15px"
-            }}>유저 정보 </span>
+            }}>채팅 </span>
             <HorizonLine/>
         </div>
     )
