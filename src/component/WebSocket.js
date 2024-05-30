@@ -1,6 +1,6 @@
 // WebSocketClient.js
 
-const SOCKET_URL = 'ws://127.0.0.1:8081';
+const SOCKET_URL = process.env.REACT_APP_WEBSOCKET_ENDPOINT;
 
 class WebSocketClient {
     constructor() {
@@ -13,11 +13,22 @@ class WebSocketClient {
     connect() {
         this.websocket = new WebSocket(SOCKET_URL);
 
+        
+        // 연결 열기 전에 핸드쉐이킹 시 헤더 추가
+          // 설정한 헤더를 포함하여 핸드쉐이킹 요청 전송
+      
         this.websocket.onopen = () => {
             console.log('WebSocket connected');
+            const headers = {
+                'SessionID': 'T8ZPRD7S82',
+                'ClientName': 'KimSuGang',
+              };
+    
             this.isConnected = true;
             // 연결되면 사용자 이름을 서버에 전달
-            this.sendUsername();
+            // this.sendUsername();
+            this.websocket.send(JSON.stringify({ type: 'CONNECT', headers }));
+
         };
 
         this.websocket.onmessage = (event) => {
@@ -43,11 +54,11 @@ class WebSocketClient {
         this.onMessageCallback = callback;
     }
 
-    sendUsername() {
-        if (this.websocket && this.isConnected) {
-            this.websocket.send(JSON.stringify({ type: 'username', data: this.username }));
-        }
-    }
+    // sendUsername() {
+    //     if (this.websocket && this.isConnected) {
+    //         this.websocket.send(JSON.stringify({ type: 'username', data: this.username }));
+    //     }
+    // }
 
     sendMessage(command, data) {
         const message = `[${command}]${data}`;
