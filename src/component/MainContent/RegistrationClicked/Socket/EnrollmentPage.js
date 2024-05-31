@@ -7,45 +7,63 @@ const EnrollmentPage = () => {
   const [name, setName] = useState("");
   const [message, setMessage] = useState("");
   const [chatHistory, setChatHistory] = useState([]);
+  const [sessionId, setSessionId] = useState(""); // 세션 ID 상태 추가
 
   const initEnrollment = () => {
     webSocketClient.username = name;
     webSocketClient.connect();
   };
 
-  const handleAddLecture = () => {
-    webSocketClient.sendMessage("addLecture", lectureId);
+  const joinSession = () => {
+    if (
+      sessionId.trim() !== "" &&
+      name.trim() !== "" &&
+      webSocketClient.isConnected
+    ) {
+      const data = JSON.stringify({
+        type: "joinClient",
+        data: `${sessionId}|${name}`,
+      });
+      webSocketClient.websocket.send(data);
+    }
   };
 
-  const handleEnroll = () => {
-    webSocketClient.sendMessage("enroll", lectureId);
+  const handleAddLecture = () => {
+    if (lectureId.trim() !== "" && webSocketClient.isConnected) {
+      const data = JSON.stringify({ type: "addLecture", data: lectureId });
+      webSocketClient.websocket.send(data);
+    }
   };
 
   const handleDeleteLecture = () => {
-    webSocketClient.sendMessage("deleteLecture", lectureId);
+    if (lectureId.trim() !== "" && webSocketClient.isConnected) {
+      const data = JSON.stringify({ type: "deleteLecture", data: lectureId });
+      webSocketClient.websocket.send(data);
+    }
+  };
+
+  const handleEnroll = () => {
+    if (lectureId.trim() !== "" && webSocketClient.isConnected) {
+      const data = JSON.stringify({ type: "enroll", data: lectureId });
+      console.log("Sending enroll message:", data); // 로그 추가
+      webSocketClient.websocket.send(data);
+    }
   };
 
   const handleSetTime = () => {
-    webSocketClient.sendMessage("setEnrollTime", enrollTime);
+    if (enrollTime.trim() !== "" && webSocketClient.isConnected) {
+      const data = JSON.stringify({ type: "setEnrollTime", data: enrollTime });
+      webSocketClient.websocket.send(data);
+    }
   };
 
   const sendMessage = () => {
     if (message.trim() !== "") {
-      webSocketClient.sendMessage("chat", message);
+      const data = JSON.stringify({ type: "chat", data: message });
+      webSocketClient.websocket.send(data);
       setMessage("");
     }
   };
-
-  // useEffect(() => {
-  //     if (webSocketClient.isConnected) {
-  //         webSocketClient.websocket.onmessage = (event) => {
-  //             const data = JSON.parse(event.data);
-  //             if (data.type === 'chat') {
-  //                 setChatHistory(prev => [...prev, data.message]);
-  //             }
-  //         };
-  //     }
-  // }, [webSocketClient.isConnected]);
 
   return (
     <div>
@@ -58,6 +76,15 @@ const EnrollmentPage = () => {
           placeholder="Your Name"
         />
         <button onClick={initEnrollment}>Init Enrollment</button>
+        <input
+          type="text"
+          value={sessionId}
+          onChange={(e) => setSessionId(e.target.value)}
+          placeholder="Session ID"
+        />
+        <button onClick={joinSession} disabled={!webSocketClient.isConnected}>
+          Join Session
+        </button>
         <input
           type="text"
           value={enrollTime}

@@ -45,9 +45,8 @@ class WebSocketClient {
 
   sendUsername() {
     if (this.websocket && this.isConnected) {
-      this.websocket.send(
-        JSON.stringify({ type: "username", data: this.username })
-      );
+      const message = JSON.stringify({ type: "username", data: this.username });
+      this.websocket.send(message);
     }
   }
 

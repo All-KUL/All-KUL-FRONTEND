@@ -1,10 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 
 const SOCKET_URL = 'ws://127.0.0.1:8081';
-//해야할 것: localstorage 써서 강의 저장 & 불러오기
-//저장된 강의는 callData를 통해 유저가 수강신청 성공한 강의를 보여주고, remove 가능하게?(이건나중에선택사항)
-//이미 수강된 강의를 입력하면 "이미 수강신청된 강의입니다" 메세지 띄우기
-
 const EnrollmentWebSocket = () => {
     const [messages, setMessages] = useState([]);
     const [isConnected, setIsConnected] = useState(false);
@@ -48,6 +44,7 @@ const EnrollmentWebSocket = () => {
 
     const handleSendMessage = (command, data) => {
         const message = `[${command}]${data}`;
+        console.log('Sending message:', message); // 로그 추가
         if (websocket.current && isConnected) {
             websocket.current.send(message);
         } else {
