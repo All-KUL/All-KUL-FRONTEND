@@ -1,49 +1,157 @@
-import React, { useEffect, useState } from "react";
-import MyTable from "./MyTable"; // MyTable 컴포넌트의 경로를 정확히 설정해야 합니다.
+import React, { useState, useEffect } from "react";
+import Flatpickr from "react-flatpickr";
+import "flatpickr/dist/themes/material_blue.css"; // Flatpickr 테마
+import webSocketClient from "../../WebSocket";
+import MyTable from "./MyTable";
+import axios from "axios";
 
-export default function DoRegistration({inputText}) {
-  // 기존 데이터 배열을 localStorage에서 불러오거나 없으면 빈 배열을 사용
+export default function DoRegistration() {
+  const [code, setCode] = useState("");
+  const [inputText, setInputText] = useState("");
+  const [enrollTime, setEnrollTime] = useState("");
   const [data, setData] = useState(() => {
     const savedData = localStorage.getItem("registrationData");
     return savedData ? JSON.parse(savedData) : [];
   });
+  const [lectureList, setLectureList] = useState([]);
+  const [lectureId, setLectureId] = useState("");
+  const [lectures, setLectures] = useState([]);
 
-  const handleDelete = (rowIndex) => {
-    const newData = [...data];
-    newData.splice(rowIndex, 1); // 해당 인덱스의 행을 삭제
-    // 남은 데이터의 ID를 재설정
-    newData.forEach((item, index) => {
-      item.id = index + 1;
-    });//id 임의의 값 설정
-    setData(newData);
-  };
+  useEffect(() => {
+    setLectureList(lectures);
+  }, [lectures]);
 
-  // 새로운 과목 추가 함수
-  const addSubject = () => {
-    if (inputText.length === 4) {
-      const newData = [
-        ...data,
-        {
-          id: data.length + 1, // 현재 데이터 개수 + 1 로 ID 설정
-          courseCode: inputText,
-          subjectName:"네프워크 프로그래밍",
-          instructor: "New Instructor",
-          credits: 3,
-          // 필요한 경우 기본 값으로 설정 가능
-        },
-      ];
-      setData(newData);
+  useEffect(() => {
+    const handleWebSocketMessage = (event) => {
+      const message = event.data;
+      if (message.startsWith("[enroll]-[success]")) {
+        alert("수강신청에 성공했습니다!");
+        const lectureName = message.match(/<(.+)>/)[1]; // 메시지에서 강의 이름 추출
+        addSubject(lectureName);
+      } else if (message.startsWith("[enroll]-[fail]")) {
+        const failMessage = message.split("[fail] ")[1].trim();
+        alert(failMessage);
+      } else if (message.startsWith("[addLecture]-[success]")) {
+        alert("과목이 개설되었습니다.");
+        const lectureName = message.match(/<(.+)>/)[1]; // 메시지에서 강의 이름 추출
+        setLectures((prevLectures) => [...prevLectures, lectureName]);
+      } else if (message.startsWith("[addLecture]-[fail]")) {
+        const failMessage = message.split("[fail] ")[1].trim();
+        alert(failMessage);
+      } else if (message.startsWith("[deleteLecture]-[success]")) {
+        alert("과목이 삭제되었습니다.");
+        const lectureName = message.match(/<(.+)>/)[1]; // 메시지에서 강의 이름 추출
+        setLectures((prevLectures) =>
+          prevLectures.filter((id) => id !== lectureName)
+        );
+      } else if (message.startsWith("[deleteLecture]-[fail]")) {
+        const failMessage = message.split("[fail] ")[1].trim();
+        alert(failMessage);
+      }
+    };
+
+    if (webSocketClient.websocket) {
+      webSocketClient.websocket.addEventListener(
+        "message",
+        handleWebSocketMessage
+      );
+    }
+
+    return () => {
+      if (webSocketClient.websocket) {
+        webSocketClient.websocket.removeEventListener(
+          "message",
+          handleWebSocketMessage
+        );
+      }
+    };
+  }, [code]);
+
+  const handleSetTime = () => {
+    if (enrollTime.trim() !== "" && webSocketClient.isConnected) {
+      webSocketClient.websocket.send("[setEnrollTime]" + enrollTime);
     }
   };
 
-  useEffect(() => {
-    addSubject();
-  }, [inputText]); // inputText가 변경될 때마다 addSubject 함수 호출
+  const handleDelete = (rowIndex) => {
+    const newData = [...data];
+    newData.splice(rowIndex, 1);
+    newData.forEach((item, index) => {
+      item.id = index + 1;
+    });
+    setData(newData);
+  };
 
-  // data가 변경될 때마다 localStorage에 저장
+  const addSubject = (lectureName) => {
+    // 이미 추가된 강의인지 확인
+    const isAlreadyAdded = data.some(
+      (item) => item.subjectName === lectureName
+    );
+    if (isAlreadyAdded) {
+      alert("이미 신청한 강의입니다!");
+      return;
+    }
+
+    const newData = [
+      ...data,
+      {
+        id: data.length + 1,
+        courseCode: code,
+        subjectName: lectureName,
+        instructor: "New Instructor",
+        credits: 3,
+      },
+    ];
+    setData(newData);
+  };
+
   useEffect(() => {
     localStorage.setItem("registrationData", JSON.stringify(data));
   }, [data]);
+
+  const handleEnroll = () => {
+    if (inputText.trim() !== "" && webSocketClient.isConnected) {
+      // 이미 신청한 강의인지 확인
+      const isAlreadyEnrolled = data.some(
+        (item) => item.courseCode === inputText
+      );
+      if (isAlreadyEnrolled) {
+        alert("이미 신청한 강의입니다!");
+        return;
+      }
+
+      webSocketClient.websocket.send("[enroll]" + inputText);
+      setCode(inputText);
+    } else {
+      alert("잘못된 입력 값입니다.");
+    }
+    setInputText("");
+  };
+
+  const handleAddLecture = () => {
+    if (lectureId.trim() !== "" && webSocketClient.isConnected) {
+      webSocketClient.websocket.send("[addLecture]" + lectureId);
+    }
+  };
+
+  const handleDeleteLecture = () => {
+    if (lectureId.trim() !== "" && webSocketClient.isConnected) {
+      webSocketClient.websocket.send("[deleteLecture]" + lectureId);
+      setLectures((prevLectures) =>
+        prevLectures.filter((id) => id !== lectureId)
+      );
+    }
+  };
+
+  const lectureColumns = React.useMemo(
+    () => [
+      {
+        Header: "Course ID",
+        accessor: "courseId",
+      },
+    ],
+    []
+  );
 
   const columns = React.useMemo(
     () => [
@@ -53,7 +161,7 @@ export default function DoRegistration({inputText}) {
       },
       {
         Header: "삭제",
-        accessor: "delete", // 삭제 버튼을 추가하려면 적절한 accessor를 지정해야 합니다.
+        accessor: "delete",
       },
       {
         Header: "학년",
@@ -92,27 +200,224 @@ export default function DoRegistration({inputText}) {
   );
 
   return (
-    <div style={{ display: "flex", marginLeft: "312px" }}>
-      <button
-        style={{
-          backgroundColor: "#3BAAB5",
-          border: "0px",
-          height: "15px",
-          marginTop: "13px",
-        }}
-      ></button>
-      <div
-        style={{
-          width:"100%",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
+    <div>
+      <div>
+        <div style={{ display: "flex", marginLeft: "312px" }}>
+          <button
+            style={{
+              backgroundColor: "#3BAAB5",
+              border: "0px",
+              height: "15px",
+              marginTop: "13px",
+            }}
+          ></button>
+          <div
+            style={{
+              width: "100%",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <span
+              style={{
+                fontWeight: "bold",
+                marginTop: "10px",
+                marginLeft: "10px",
+              }}
+            >
+              과목 개설 & 시간 설정
+            </span>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                marginTop: "10px",
+              }}
+            >
+              <input
+                type="text"
+                value={lectureId}
+                onChange={(e) => setLectureId(e.target.value)}
+                placeholder="Course ID (4 digits)"
+                style={{
+                  outlineColor: "#ECECEC",
+                  height: "20px",
+                  width: "150px",
+                  borderRadius: "3px",
+                  border: "2px solid #ECECEC",
+                  marginRight: "5px",
+                }}
+              />
+              <button
+                onClick={handleAddLecture}
+                disabled={!webSocketClient.isConnected || !lectureId}
+                style={{
+                  backgroundColor: "#4BAB26",
+                  height: "24px",
+                  width: "100px",
+                  marginLeft: "5px",
+                  color: "#FFFFFF",
+                  borderRadius: "3px",
+                  cursor: "grab",
+                }}
+              >
+                Add
+              </button>
+              <button
+                onClick={handleDeleteLecture}
+                disabled={!webSocketClient.isConnected || !lectureId}
+                style={{
+                  backgroundColor: "#D32F2F",
+                  height: "24px",
+                  width: "100px",
+                  marginLeft: "5px",
+                  color: "#FFFFFF",
+                  borderRadius: "3px",
+                  cursor: "grab",
+                }}
+              >
+                Delete
+              </button>
+            </div>
+          </div>
+        </div>
 
-        <text style={{ fontWeight: "bold", marginTop: "10px", marginLeft: "10px" }}>수강신청 내역</text>
-
-        <MyTable columns={columns} data={data} handleDelete={handleDelete} />
-
+        <div style={{ marginLeft: "312px", marginTop: "20px", width: "30%" }}>
+          <MyTable
+            columns={lectureColumns}
+            data={lectures.map((id) => ({ courseId: id }))}
+          />
+        </div>
+        <div
+          style={{
+            display: "flex",
+            marginTop: "10px",
+            alignItems: "center",
+            marginLeft: "312px",
+            marginTop: "20px",
+          }}
+        >
+          <Flatpickr
+            data-enable-time
+            value={enrollTime}
+            onChange={(selectedDates) => {
+              const date = selectedDates[0];
+              const formattedDate = `${date.getFullYear()}.${("0" + (date.getMonth() + 1)).slice(-2)}.${("0" + date.getDate()).slice(-2)}-${("0" + date.getHours()).slice(-2)}:${("0" + date.getMinutes()).slice(-2)}`;
+              setEnrollTime(formattedDate);
+            }}
+            options={{
+              enableTime: true,
+              dateFormat: "Y-m-d H:i",
+            }}
+            style={{
+              outlineColor: "#ECECEC",
+              height: "20px",
+              width: "150px",
+              borderRadius: "3px",
+              border: "2px solid #ECECEC",
+            }}
+          />
+          <button
+            onClick={handleSetTime}
+            disabled={!webSocketClient.isConnected}
+            style={{
+              backgroundColor: "#005128",
+              height: "24px",
+              width: "100px",
+              marginLeft: "5px",
+              color: "#FFFFFF",
+              borderRadius: "3px",
+              cursor: "grab",
+            }}
+          >
+            시간 설정
+          </button>
+          <span
+            style={{
+              fontSize: "13px",
+              fontWeight: "bold",
+              marginLeft: "20px",
+              whiteSpace: "nowrap",
+            }}
+          >
+            빠른수강신청
+          </span>
+          <input
+            type="text"
+            onChange={(e) => setInputText(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                handleEnroll();
+                e.target.value = "";
+              }
+            }}
+            placeholder="과목번호 (4자리)"
+            value={inputText}
+            style={{
+              outlineColor: "#ECECEC",
+              height: "20px",
+              width: "150px",
+              marginLeft: "5px",
+              borderRadius: "3px",
+              border: "2px solid #ECECEC",
+            }}
+          />
+          <button
+            onClick={handleEnroll}
+            style={{
+              backgroundColor: "#005128",
+              height: "24px",
+              width: "60px",
+              marginLeft: "5px",
+              color: "#FFFFFF",
+              borderRadius: "3px",
+              cursor: "grab",
+            }}
+          >
+            신청
+          </button>
+        </div>
+        <div
+          style={{
+            borderBottom: "1px solid black",
+            lineHeight: "0.1em",
+            width: "1180px",
+            marginLeft: "312px",
+            marginTop: "10px",
+          }}
+        />
+        <div style={{ display: "flex", marginLeft: "312px" }}>
+          <button
+            style={{
+              backgroundColor: "#3BAAB5",
+              border: "0px",
+              height: "15px",
+              marginTop: "13px",
+            }}
+          ></button>
+          <div
+            style={{
+              width: "100%",
+              display: "flex",
+              flexDirection: "column",
+            }}
+          >
+            <span
+              style={{
+                fontWeight: "bold",
+                marginTop: "10px",
+                marginLeft: "10px",
+              }}
+            >
+              수강신청 내역
+            </span>
+            <MyTable
+              columns={columns}
+              data={data}
+              handleDelete={handleDelete}
+            />
+          </div>
+        </div>
       </div>
     </div>
   );

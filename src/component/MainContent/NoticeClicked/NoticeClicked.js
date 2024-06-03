@@ -1,32 +1,21 @@
-import { useState } from "react";
-import DoNotice from "./DoNotice";
+import React, { useState, useEffect } from "react";
 import "../../../index.css";
+import Login from "./Login";
+import Manual from "./Manual";
+
 export default function NoticeClicked() {
   const baseURL = process.env.REACT_APP_LECTURE_API; //base URL 설정
 
   const [buttonName, setButtonName] = useState("Login");
-  const [code, setCode] = useState(""); // code 상태를 useState로 관리
-  const [inputText, setInputText] = useState("");
 
   const handleButtonClick = (buttonName) => {
     setButtonName(buttonName);
   };
 
-  const activeButton = () => {
-    if (inputText.length === 4) {
-      alert(`${inputText} 추가 완료`);
-      setCode(inputText);
-    } else {
-      alert("잘못된 입렵 값입니다.");
-    }
-    setInputText(""); // 입력 상태 초기화
-  };
-  const activeEnter = (e) => {
-    if (e.key === "Enter") {
-      activeButton();
-      e.target.value = ""; // 입력값 초기화
-    }
-  };
+  useEffect(() => {
+    console.log('Active component:', buttonName);
+  }, [buttonName]);
+
   return (
     <div>
       <div style={{ display: "flex" }}>
@@ -67,7 +56,10 @@ export default function NoticeClicked() {
         }}
       />
 
-      <DoNotice activeComponent={buttonName} />
+      <div>
+        {buttonName === 'Login' && <Login />}
+        {buttonName === 'Manual' && <Manual />}
+      </div>
     </div>
   );
 }
