@@ -23,30 +23,41 @@ export default function DoRegistration() {
 
   useEffect(() => {
     const handleWebSocketMessage = (event) => {
-      const message = event.data;
-      if (message.startsWith("[enroll]-[success]")) {
+      const data =
+        typeof event.data === "string" ? event.data : String(event.data);
+
+      const parts = data.split("]");
+      if (parts.length > 1 && parts[1].includes("success")) {
         alert("수강신청에 성공했습니다!");
-        const lectureName = message.match(/<(.+)>/)[1]; // 메시지에서 강의 이름 추출
-        addSubject(lectureName);
-      } else if (message.startsWith("[enroll]-[fail]")) {
-        const failMessage = message.split("[fail] ")[1].trim();
+        const lectureNameMatch = data.match(/<(.+)>/);
+        if (lectureNameMatch) {
+          const lectureName = lectureNameMatch[1].trim();
+          addSubject(lectureName);
+        }
+      } else if (parts.length > 1 && parts[1].includes("fail")) {
+        const failMessage = data.split("[fail] ")[1].trim();
         alert(failMessage);
-      } else if (message.startsWith("[addLecture]-[success]")) {
-        alert("과목이 개설되었습니다.");
-        const lectureName = message.match(/<(.+)>/)[1]; // 메시지에서 강의 이름 추출
-        setLectures((prevLectures) => [...prevLectures, lectureName]);
-      } else if (message.startsWith("[addLecture]-[fail]")) {
-        const failMessage = message.split("[fail] ")[1].trim();
-        alert(failMessage);
-      } else if (message.startsWith("[deleteLecture]-[success]")) {
-        alert("과목이 삭제되었습니다.");
-        const lectureName = message.match(/<(.+)>/)[1]; // 메시지에서 강의 이름 추출
-        setLectures((prevLectures) =>
-          prevLectures.filter((id) => id !== lectureName)
-        );
-      } else if (message.startsWith("[deleteLecture]-[fail]")) {
-        const failMessage = message.split("[fail] ")[1].trim();
-        alert(failMessage);
+      } else if (parts.length > 2 && parts[1].includes("addLecture")) {
+        if (parts[2].includes("success")) {
+          alert("과목이 개설되었습니다.");
+          const lectureNameMatch = data.match(/<(.+)>/);
+          if (lectureNameMatch) {
+            const lectureName = lectureNameMatch[1].trim();
+            setLectures((prevLectures) => [...prevLectures, lectureName]);
+          }
+        } else {
+          alert("강의가 개설과목 목록에 존재하지 않습니다!");
+        }
+      } else if (parts.length > 2 && parts[1].includes("deleteLecture")) {
+        if (parts[2].includes("success")) {
+          alert("과목이 삭제되었습니다.");
+          const lectureName = data.match(/<(.+)>/)[1]; // 메시지에서 강의 이름 추출
+          setLectures((prevLectures) =>
+            prevLectures.filter((id) => id !== lectureName)
+          );
+        }
+      } else if (parts.length > 2 && parts[2].includes("fail")) {
+        alert("강의가 세션에 존재하지 않습니다!");
       }
     };
 
