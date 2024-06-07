@@ -1,6 +1,6 @@
 // WebSocketClient.js
 
-const SOCKET_URL = process.env.REACT_APP_WEBSOCKET_ENDPOINT;
+const SOCKET_URL = "ws://127.0.0.1:8081";
 
 class WebSocketClient {
   constructor() {
@@ -73,3 +73,4 @@ class WebSocketClient {
 const webSocketClient = new WebSocketClient();
 
 export default webSocketClient;
+

@@ -1,4 +1,4 @@
-import "../../../index.css";
+/* import "../../../index.css";
 import EnrollmentPage from "../RegistrationClicked/Socket/EnrollmentPage";
 import EnrollmentWebSocket from "../RegistrationClicked/Socket/EnrollmentWebSocket";
 export default function EvaluationClicked() {
@@ -10,3 +10,4 @@ export default function EvaluationClicked() {
         </div>
     );
 }
+ */
