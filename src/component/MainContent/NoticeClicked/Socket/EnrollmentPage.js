@@ -8,12 +8,24 @@ const EnrollmentPage = () => {
   const [sessionId, setSessionId] = useState("");
   const [chatHistory, setChatHistory] = useState([]);
   const [showChat, setShowChat] = useState(false);
+  const [message, setMessage] = useState("");
+
+  const sendMessage = () => {
+    if (message.trim() !== "") {
+      webSocketClient.websocket.send("[chat]" + message);
+      setMessage("");
+    }
+  };
+  
   const [chatMessage, setChatMessage] = useState(() => {
-    // 로컬 스토리지에서 채팅 메시지 불러오기: 
+  
+  
+  // 로컬 스토리지에서 채팅 메시지 불러오기: 
     const savedChatMessage = localStorage.getItem("chatMessage");
     return savedChatMessage ? JSON.parse(savedChatMessage) : [];
   });
 
+  
   useEffect(() => {
     webSocketClient.setOnMessageCallback((data) => {
       const parts = data.split("]");
@@ -79,23 +91,7 @@ const EnrollmentPage = () => {
         <Button onClick={joinSession}>방만들기</Button>
       </InputContainer>
 
-      {showChat && (
-        <ChatHistoryContainer>
-          {chatHistory.map((msg, index) => (
-            <ChatMessage key={index}>
-              {msg}
-              <CopyButton onClick={() => handleCopy(msg)}>Copy</CopyButton>
-            </ChatMessage>
-          ))}
-        </ChatHistoryContainer>
-      )}
-      <ChatHistoryContainer>
-          {chatMessage.map((msg, index) => (
-            <ChatMessage key={index}>
-              {msg}
-            </ChatMessage>
-          ))}
-        </ChatHistoryContainer>
+      
       <InputContainer>
         <Input
           type="text"
@@ -104,56 +100,13 @@ const EnrollmentPage = () => {
           placeholder="Session ID"
         />
         <Button2 onClick={joinSession2}>입장하기</Button2>
+       
       </InputContainer>
-     
+  
     </Container>
-    /* <input
-          type="text"
-          value={enrollTime}
-          onChange={(e) => setEnrollTime(e.target.value)}
-          placeholder="YYYY.MM.DD-HH:MM"
-        />
-        <button onClick={handleSetTime} disabled={!webSocketClient.isConnected}>
-          Set Enroll Time
-        </button>
-        <input
-          type="text"
-          value={lectureId}
-          onChange={(e) => setLectureId(e.target.value)}
-          placeholder="Course ID (4 digits)"
-        />
-        <button
-          onClick={handleAddLecture}
-          disabled={!webSocketClient.isConnected || !lectureId}
-        >
-          Add Lecture
-        </button>
-        <button
-          onClick={handleDeleteLecture}
-          disabled={!webSocketClient.isConnected || !lectureId}
-        >
-          Delete Lecture
-        </button>
-        <button
-          onClick={handleEnroll}
-          disabled={!webSocketClient.isConnected || !lectureId}
-        >
-          Enroll
-        </button>
-        <input
-          type="text"
-          value={message}
-          onChange={(e) => setMessage(e.target.value)}
-          placeholder="Type your message here"
-        />
-        <button
-          onClick={sendMessage}
-          disabled={!webSocketClient.isConnected || !message.trim()}
-        >
-          Send
-        </button> */
   );
 };
+
 
 const Container = styled.div`
   display: flex;

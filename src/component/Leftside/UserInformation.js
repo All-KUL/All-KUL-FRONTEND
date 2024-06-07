@@ -1,17 +1,40 @@
 import React, { useState, useEffect } from "react";
 import HorizonLine from "../horizontal";
 import webSocketClient from "../WebSocket";
+import styled from "styled-components";
 
 export default function UserInfo() {
   const [message, setMessage] = useState("");
+  const [chatHistory, setChatHistory] = useState(() => {
+    // 로컬 스토리지에서 채팅 메시지 불러오기
+    const savedChatMessage = localStorage.getItem("chatHistory");
+    return savedChatMessage ? JSON.parse(savedChatMessage) : [];
+  });
 
   const sendMessage = () => {
     if (message.trim() !== "") {
-      webSocketClient.websocket.send("[chat]" + message);
+      //여기서 대신 아이디
+      const newMessage = "[chat]" + message;
+      webSocketClient.websocket.send(newMessage);
       setMessage("");
+      setChatHistory((prev) => {
+        const updatedHistory = [...prev, newMessage];
+        localStorage.setItem("chatHistory", JSON.stringify(updatedHistory));
+        return updatedHistory;
+      });
     }
   };
 
+  useEffect(() => {
+    webSocketClient.setOnMessageCallback((data) => {
+      setChatHistory((prev) => {
+        const newMessages = [...prev, data];
+        localStorage.setItem("chatHistory", JSON.stringify(newMessages));
+        return newMessages;
+      });
+    });
+  }, [chatHistory]);
+  
   return (
     <div
       style={{
@@ -37,6 +60,9 @@ export default function UserInfo() {
           }}
         >
           <div>채팅</div>
+            {chatHistory.map((msg, index) => (
+              <ChatMessage key={index}>{msg}</ChatMessage>
+            ))}
         </div>
         <input
           type="text"
@@ -61,3 +87,9 @@ export default function UserInfo() {
     </div>
   );
 }
+
+const ChatMessage = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
