@@ -16,7 +16,6 @@ export default function DoRegistration() {
   const [lectureList, setLectureList] = useState([]);
   const [lectureId, setLectureId] = useState("");
   const [lectures, setLectures] = useState([]);
-  const [sessionCourses, setSessionCourses] = useState([]); // 자동 등록에 필요한 세션 강의 리스트
 
   useEffect(() => {
     setLectureList(lectures);
@@ -46,9 +45,8 @@ export default function DoRegistration() {
             const lectureName = lectureNameMatch[1].trim();
             setLectures((prevLectures) => [...prevLectures, lectureName]);
           }
-        } else if (parts[2].includes("fail")) {
-          const failMessage = data.split("[fail] ")[1].trim();
-          alert(failMessage);
+        } else {
+          alert("강의가 개설과목 목록에 존재하지 않습니다!");
         }
       } else if (parts.length > 2 && parts[1].includes("deleteLecture")) {
         if (parts[2].includes("success")) {
@@ -79,27 +77,6 @@ export default function DoRegistration() {
       }
     };
   }, [code]);
-
-  // 자동 등록 로직 추가
-  useEffect(() => {
-    const currentTime = new Date();
-
-    if (enrollTime && new Date(enrollTime) <= currentTime) {
-      sessionCourses.forEach((course) => {
-        const totalEnrollments = course.enrollments + 100; // 총 등록 수를 100명 증가
-
-        for (let i = 0; i < totalEnrollments; i++) {
-          const randomInterval = Math.floor(Math.random() * 400) + 100; // Random interval between 100ms and 500ms
-
-          setTimeout(() => {
-            if (webSocketClient.isConnected) {
-              webSocketClient.websocket.send("[botEnroll]" + course.courseCode);
-            }
-          }, randomInterval);
-        }
-      });
-    }
-  }, [enrollTime, sessionCourses]);
 
   const handleSetTime = () => {
     if (enrollTime.trim() !== "" && webSocketClient.isConnected) {
@@ -165,11 +142,6 @@ export default function DoRegistration() {
   const handleAddLecture = () => {
     if (lectureId.trim() !== "" && webSocketClient.isConnected) {
       webSocketClient.websocket.send("[addLecture]" + lectureId);
-      // 강의 리스트에 추가
-      setSessionCourses((prevCourses) => [
-        ...prevCourses,
-        { courseCode: lectureId, enrollments: 0 },
-      ]);
     }
   };
 
@@ -178,9 +150,6 @@ export default function DoRegistration() {
       webSocketClient.websocket.send("[deleteLecture]" + lectureId);
       setLectures((prevLectures) =>
         prevLectures.filter((id) => id !== lectureId)
-      );
-      setSessionCourses((prevCourses) =>
-        prevCourses.filter((course) => course.courseCode !== lectureId)
       );
     }
   };
