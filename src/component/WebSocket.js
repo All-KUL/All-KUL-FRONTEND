@@ -1,4 +1,4 @@
-// WebSocketClient.js
+// WebSocket.js
 
 const SOCKET_URL = process.env.REACT_APP_WEBSOCKET_ENDPOINT;
 
@@ -54,7 +54,6 @@ class WebSocketClient {
 
   sendMessage(command, data) {
     const message = `[${command}]${data}`;
-
     if (this.isConnected) {
       this.websocket.send(message);
     } else {

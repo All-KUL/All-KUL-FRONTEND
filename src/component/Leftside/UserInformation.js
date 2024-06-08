@@ -34,7 +34,7 @@ export default function UserInfo() {
       });
     });
   }, [chatHistory]);
-  
+
   return (
     <div
       style={{
@@ -59,8 +59,9 @@ export default function UserInfo() {
             padding: "5px",
           }}
         >
-          <div>채팅</div>
-            {chatHistory.map((msg, index) => (
+          {chatHistory
+            .filter((msg) => !msg.startsWith("[chat]")) // [chat]으로 시작하는 메시지 필터링
+            .map((msg, index) => (
               <ChatMessage key={index}>{msg}</ChatMessage>
             ))}
         </div>

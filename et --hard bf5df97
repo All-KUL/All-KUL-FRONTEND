@@ -1,0 +1,30 @@
+[33m59076ce[m[33m ([m[1;36mHEAD -> [m[1;32myumi[m[33m)[m HEAD@{0}: reset: moving to HEAD
+[33m59076ce[m[33m ([m[1;36mHEAD -> [m[1;32myumi[m[33m)[m HEAD@{1}: reset: moving to HEAD
+[33m59076ce[m[33m ([m[1;36mHEAD -> [m[1;32myumi[m[33m)[m HEAD@{2}: reset: moving to HEAD^
+[33mc96844e[m[33m ([m[1;31morigin/main[m[33m, [m[1;31morigin/junganDev[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{3}: pull --tags origin main: Fast-forward
+[33mbf5df97[m HEAD@{4}: commit: ADD: 자동 봇 기능
+[33m64fbee5[m HEAD@{5}: commit: FIX: 브로드캐스트로 로직 변경
+[33m3c73515[m HEAD@{6}: commit: UPDATE1: 로그인 페이지 UI 및 joinClient 구현
+[33maed8c36[m HEAD@{7}: commit: UPDATE: 로그인 페이지 모든 버튼 정상 작동
+[33m362247a[m HEAD@{8}: commit: UPDATE : 로그인 페이지 틀만..
+[33m77fad14[m HEAD@{9}: checkout: moving from main to yumi
+[33m83c2141[m[33m ([m[1;32mmain[m[33m)[m HEAD@{10}: checkout: moving from yumi to main
+[33m77fad14[m HEAD@{11}: reset: moving to HEAD
+[33m77fad14[m HEAD@{12}: pull origin junganDev: Fast-forward
+[33m83c2141[m[33m ([m[1;32mmain[m[33m)[m HEAD@{13}: pull --tags origin main: Fast-forward
+[33m47f3baa[m[33m ([m[1;31morigin/yumi[m[33m)[m HEAD@{14}: checkout: moving from main to yumi
+[33m83c2141[m[33m ([m[1;32mmain[m[33m)[m HEAD@{15}: pull --tags origin main: Fast-forward
+[33m47f3baa[m[33m ([m[1;31morigin/yumi[m[33m)[m HEAD@{16}: merge yumi: Fast-forward
+[33m207c65b[m HEAD@{17}: checkout: moving from yumi to main
+[33m47f3baa[m[33m ([m[1;31morigin/yumi[m[33m)[m HEAD@{18}: Branch: renamed refs/heads/main to refs/heads/yumi
+[33m47f3baa[m[33m ([m[1;31morigin/yumi[m[33m)[m HEAD@{20}: Branch: renamed refs/heads/yumi to refs/heads/main
+[33m47f3baa[m[33m ([m[1;31morigin/yumi[m[33m)[m HEAD@{22}: commit: ADD : Add/Delete/Get lecture
+[33meb990ab[m HEAD@{23}: commit (merge): Merge remote-tracking branch 'origin/junganDev' into yumi
+[33mb8e70d0[m HEAD@{24}: commit: ADD : Add/Delete/Get lecture
+[33m6e8acfb[m HEAD@{25}: commit: FIX: 과목 삭제에서, 화면 안 바뀌는거 바뀌도록 변경했습니다(병합중)
+[33m207c65b[m HEAD@{26}: checkout: moving from main to yumi
+[33m207c65b[m HEAD@{27}: merge yumi: Fast-forward
+[33m8cfb11b[m HEAD@{28}: checkout: moving from yumi to main
+[33m207c65b[m HEAD@{29}: commit: ADD: nav boxshadow, notice contents
+[33m8cfb11b[m HEAD@{30}: checkout: moving from main to yumi
+[33m8cfb11b[m HEAD@{31}: clone: from https://github.com/All-KUL/All-KUL-FRONTEND.git

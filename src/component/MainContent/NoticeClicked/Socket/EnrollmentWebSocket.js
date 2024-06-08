@@ -1,4 +1,4 @@
-// WebSocketClient.js
+/* // WebSocketClient.js
 
 const SOCKET_URL = "ws://127.0.0.1:8081";
 
@@ -74,3 +74,4 @@ const webSocketClient = new WebSocketClient();
 
 export default webSocketClient;
 
+ */
