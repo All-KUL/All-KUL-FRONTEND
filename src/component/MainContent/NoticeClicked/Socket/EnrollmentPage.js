@@ -8,18 +8,8 @@ const EnrollmentPage = () => {
   const [sessionId, setSessionId] = useState("");
   const [chatHistory, setChatHistory] = useState([]);
   const [showChat, setShowChat] = useState(false);
-  const [message, setMessage] = useState("");
-
-  const sendMessage = () => {
-    if (message.trim() !== "") {
-      webSocketClient.websocket.send("[chat]" + message);
-      setMessage("");
-    }
-  };
-  
+  const [message, setMessage] = useState("");  
   const [chatMessage, setChatMessage] = useState(() => {
-  
-  
   // 로컬 스토리지에서 채팅 메시지 불러오기: 
     const savedChatMessage = localStorage.getItem("chatMessage");
     return savedChatMessage ? JSON.parse(savedChatMessage) : [];
@@ -62,6 +52,7 @@ const EnrollmentPage = () => {
   };
 
   const handleCopy = (msg) => {
+    
     copy(msg);
     alert("메시지가 클립보드에 복사되었습니다!");
   };
@@ -100,7 +91,7 @@ const EnrollmentPage = () => {
           placeholder="Session ID"
         />
         <Button2 onClick={joinSession2}>입장하기</Button2>
-       
+       <CopyButton onClick={()=>handleCopy()}>Copy</CopyButton>
       </InputContainer>
   
     </Container>

@@ -1,5 +1,4 @@
 // WebSocketClient.js
-
 const SOCKET_URL = process.env.REACT_APP_WEBSOCKET_ENDPOINT;
 
 class WebSocketClient {
